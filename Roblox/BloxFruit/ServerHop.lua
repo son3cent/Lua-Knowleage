@@ -8,6 +8,10 @@
 local ui = game.CoreGui:FindFirstChild("CustomAimbotGui")
 if ui then ui:Destroy() end
 
+if not setDelay then
+	setDelay = 5
+end
+
 local CustomAimbotGui = Instance.new("ScreenGui")
 CustomAimbotGui.Name = "CustomAimbotGui"
 CustomAimbotGui.Parent = game.CoreGui
@@ -52,13 +56,16 @@ function findServer()
 	end
 end
 
+local fruitExists = false
+
 game:GetService("UserInputService").InputBegan:Connect(function(io, p)
 	if io.KeyCode == Enum.KeyCode.M then
 		findServer()
+	elseif io.KeyCode == Enum.KeyCode.N then
+		fruitExists = true
 	end
 end)
 
-local fruitExists = false
 local connection
 function onRenderStepped()
 	for i,v in pairs(game.Workspace:GetChildren()) do
@@ -107,7 +114,7 @@ connection = game:GetService("RunService").RenderStepped:Connect(onRenderStepped
 local queueteleport = syn and syn.queue_on_teleport or queue_on_teleport or fluxus and fluxus.queue_on_teleport
 queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/son3cent/Lua-Knowleage/main/Roblox/BloxFruit/ServerHop.lua'))()")
 
-wait(5)
+wait(setDelay)
 if not fruitExists then
 	findServer()
 end
