@@ -36,25 +36,29 @@ FuitInfo.TextXAlignment = Enum.TextXAlignment.Center
 FuitInfo.TextYAlignment = Enum.TextYAlignment.Bottom
 FuitInfo.TextStrokeTransparency = 0.5
 
-game:GetService("UserInputService").InputBegan:Connect(function(io, p)
-	if io.KeyCode == Enum.KeyCode.M then				
-		local Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. game.PlaceId .. '/servers/Public?sortOrder=Asc&limit=100'))
-		local selectIndex  = math.random(4, 9)
-		local skipCount = 0
-		for i,v in pairs(Site.data) do
-			if v.playing then
-				skipCount = skipCount + 1		
-			end
-			if skipCount == selectIndex then
-				-- game.ReplicatedStorage['__ServerBrowser']:InvokeServer('teleport', v.id)
-				game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, v.id, game.Players.LocalPlayer)
-				break
-			end
+function findServer()
+	local Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. game.PlaceId .. '/servers/Public?sortOrder=Asc&limit=100'))
+	local selectIndex  = math.random(4, 9)
+	local skipCount = 0
+	for i,v in pairs(Site.data) do
+		if v.playing then
+			skipCount = skipCount + 1		
 		end
+		if skipCount == selectIndex then
+			-- game.ReplicatedStorage['__ServerBrowser']:InvokeServer('teleport', v.id)
+			game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, v.id, game.Players.LocalPlayer)
+			break
+		end
+	end
+end
+
+game:GetService("UserInputService").InputBegan:Connect(function(io, p)
+	if io.KeyCode == Enum.KeyCode.M then
+		findServer()
 	end
 end)
 
-
+local fruitExists = false
 local connection
 function onRenderStepped()
 	for i,v in pairs(game.Workspace:GetChildren()) do
@@ -67,6 +71,7 @@ function onRenderStepped()
 						break
 					end
 				end
+				fruitExists = true
 				FuitInfo.Text = fruitMesh or "Unknown fruit"
 			end
 			local fruitDistance = math.floor((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Handle.Position).Magnitude / 3)
@@ -99,6 +104,10 @@ end
 -- resume(create(function()
 connection = game:GetService("RunService").RenderStepped:Connect(onRenderStepped)
 
--- Fuck
 local queueteleport = syn and syn.queue_on_teleport or queue_on_teleport or fluxus and fluxus.queue_on_teleport
 queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/son3cent/Lua-Knowleage/main/Roblox/BloxFruit/ServerHop.lua'))()")
+
+wait(5)
+if not fruitExists then
+	findServer()
+end
