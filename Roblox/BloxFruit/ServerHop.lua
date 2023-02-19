@@ -9,7 +9,7 @@ local ui = game.CoreGui:FindFirstChild("CustomAimbotGui")
 if ui then ui:Destroy() end
 
 if not setDelay then
-	setDelay = 5
+	setDelay = 30
 end
 
 local CustomAimbotGui = Instance.new("ScreenGui")
