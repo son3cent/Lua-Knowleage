@@ -633,8 +633,8 @@ HeeMenGui.HopLowPlayer = function()
     local url = 'https://games.roblox.com/v1/games/' .. game.PlaceId .. '/servers/Public?sortOrder=Asc&limit=100'
     local Site = nil
 	Site = game.HttpService:JSONDecode(game:HttpGet(url))
-	Site = game.HttpService:JSONDecode(game:HttpGet(url .. "&cursor=" .. Site.nextPageCursor))
-	Site = game.HttpService:JSONDecode(game:HttpGet(url .. "&cursor=" .. Site.nextPageCursor))
+	-- Site = game.HttpService:JSONDecode(game:HttpGet(url .. "&cursor=" .. Site.nextPageCursor))
+	-- Site = game.HttpService:JSONDecode(game:HttpGet(url .. "&cursor=" .. Site.nextPageCursor))
     -- setclipboard('https://games.roblox.com/v1/games/' .. game.PlaceId .. '/servers/Public?sortOrder=Asc&limit=100')
     -- https://games.roblox.com/v1/games/7449423635/servers/Public?sortOrder=Asc&limit=100
     -- Site.nextPageCursor
@@ -672,8 +672,8 @@ HeeMenGui.LoadFruitFinderHop = function()
                     for j, w in pairs(v.Fruit:GetChildren()) do
                         fruitFullInfo = fruitFullInfo .. w.Name .. "\n"
                     end
-                    HeeMenGui.FruitExists = true
                 end
+	        HeeMenGui.FruitExists = true
             end
             local fruitDistance = math.floor((game:GetService('Players').LocalPlayer.Character.Head.Position -
                                                  v.Handle.Position).Magnitude / 3)
