@@ -22,12 +22,12 @@ repeat
 until game:GetService('Players').LocalPlayer.Character:WaitForChild("Head")
 repeat
     wait()
-until game:GetService('Players').LocalPlayer:FindFirstChild("PlayerGui");
+until game:GetService('Players').LocalPlayer:FindFirstChild("PlayerGui")
 repeat
     wait()
-until game:GetService('Players').LocalPlayer.PlayerGui:FindFirstChild("Main");
+until game:GetService('Players').LocalPlayer.PlayerGui:FindFirstChild("Main")
 
-if not (game.PlaceId == 2753915549 or game.PlaceId == 4442272183 or game.PlaceId == 7449423635) then
+if not (game.PlaceId == 2753915549) and not(game.PlaceId == 4442272183) and not(game.PlaceId == 7449423635) then
     return
 end
 
@@ -73,7 +73,8 @@ HeeMenGui.Config = {
     Dragable = false,
     LastUiPosition = nil,
     FruitFinderHop = false,
-    AimBot = false
+    AimBot = false,
+    AutoKenRejoin = false
 }
 HeeMenGui.Destroy = tempDestroy
 HeeMenGui.Name = tostring(HeeMenGui.Config.GuiName)
@@ -83,6 +84,7 @@ HeeMenGui.Mouse = game:GetService("Players").LocalPlayer:GetMouse()
 HeeMenGui.OnCombat = false
 HeeMenGui.LoadingAbilities = false
 HeeMenGui.FruitExists = false
+HeeMenGui.NoClip = false
 HeeMenGui.FruitFinderHopCountDown = 50
 HeeMenGui.UI = {}
 HeeMenGui.Print = function(message)
@@ -98,7 +100,7 @@ HeeMenGui.Print = function(message)
     end
 end
 HeeMenGui.LoadConfig = function()
-    -- assert(FileName or FileName == "string", "oopsies");    
+    -- assert(FileName or FileName == "string", "oopsies")
     local File = string.format("HeeMenGui/%s.json", game.Players.LocalPlayer.Name)
     if isfile(File) then
         local ConfigData = game:GetService("HttpService"):JSONDecode(readfile(File))
@@ -109,7 +111,7 @@ HeeMenGui.LoadConfig = function()
 end
 HeeMenGui.SaveConfig = function()
     if not isfolder("HeeMenGui") then
-        makefolder("HeeMenGui");
+        makefolder("HeeMenGui")
     end
 
     HeeMenGui.Print(HeeMenGui.Config)
@@ -148,17 +150,23 @@ HeeMenGui.Load = function(name)
     HeeMenGui.UI.Main = Instance.new("Frame")
     HeeMenGui.UI.Main.Name = "Main"
     HeeMenGui.UI.Main.Parent = HeeMenGui.ScreenGui
-    HeeMenGui.UI.Main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    HeeMenGui.UI.Main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     HeeMenGui.UI.Main.ClipsDescendants = true
     HeeMenGui.UI.Main.Position = HeeMenGui.UI.LastUiPosition
     HeeMenGui.UI.Main.Size = UDim2.new(1, -600, 0, 30)
-    HeeMenGui.UI.Main.BorderSizePixel = 3
-    HeeMenGui.UI.Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    HeeMenGui.UI.Main.BorderSizePixel = 1
+    HeeMenGui.UI.Main.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    HeeMenGui.UI.Main.BackgroundTransparency = 0
+    HeeMenGui.UI.Main.MouseLeave:Connect(function()
+        HeeMenGui.UI.Main.Size = UDim2.new(1, -600, 0, 30)
+    end)
+    -- HeeMenGui.UI.Main.BorderSizePixel = 1
+    -- HeeMenGui.UI.Main.BorderMode = Enum.BorderMode.Inset
     -- Main.Enabled = false
 
-    HeeMenGui.UI.MainUICorner = Instance.new("UICorner")
-    HeeMenGui.UI.MainUICorner.Name = "MainUICorner"
-    HeeMenGui.UI.MainUICorner.Parent = HeeMenGui.UI.Main
+    -- HeeMenGui.UI.MainUICorner = Instance.new("UICorner")
+    -- HeeMenGui.UI.MainUICorner.Name = "MainUICorner"
+    -- HeeMenGui.UI.MainUICorner.Parent = HeeMenGui.UI.Main
 
     HeeMenGui.UI.TopMain = Instance.new("Frame")
     HeeMenGui.UI.TopMain.Name = "TopMain"
@@ -177,7 +185,7 @@ HeeMenGui.Load = function(name)
     HeeMenGui.UI.TopMainLine.Parent = HeeMenGui.UI.TopMain
     HeeMenGui.UI.TopMainLine.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     HeeMenGui.UI.TopMainLine.BorderSizePixel = 0
-    HeeMenGui.UI.TopMainLine.Position = UDim2.new(0, 0, 0.833333313, 0)
+    HeeMenGui.UI.TopMainLine.Position = UDim2.new(0, 0, 0, 0)
     HeeMenGui.UI.TopMainLine.Size = UDim2.new(1, 0, 0, 5)
 
     HeeMenGui.UI.ShowName = Instance.new("TextLabel")
@@ -202,15 +210,15 @@ HeeMenGui.Load = function(name)
     HeeMenGui.UI.ToggleButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
     HeeMenGui.UI.ToggleButton.Size = UDim2.new(0, 20, 0, 20)
     HeeMenGui.UI.ToggleButton.BackgroundTransparency = 0
-    HeeMenGui.UI.ToggleButton.BorderSizePixel = 2;
-    HeeMenGui.UI.ToggleButton.BorderMode = Enum.BorderMode.Inset;
+    HeeMenGui.UI.ToggleButton.BorderSizePixel = 2
+    HeeMenGui.UI.ToggleButton.BorderMode = Enum.BorderMode.Inset
 
     HeeMenGui.UI.InnerToggleButton = Instance.new("Frame")
     HeeMenGui.UI.InnerToggleButton.Name = "InnerToggleButton"
     HeeMenGui.UI.InnerToggleButton.Parent = HeeMenGui.UI.ToggleButton
     HeeMenGui.UI.InnerToggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     HeeMenGui.UI.InnerToggleButton.Position = UDim2.new(0, 2, 0, 2)
-    HeeMenGui.UI.InnerToggleButton.BorderColor3 = Color3.new(0, 0, 0);
+    HeeMenGui.UI.InnerToggleButton.BorderColor3 = Color3.new(0, 0, 0)
     HeeMenGui.UI.InnerToggleButton.Size = UDim2.new(0, 12, 0, 12)
     HeeMenGui.UI.InnerToggleButton.BackgroundTransparency = 1
     HeeMenGui.UI.InnerToggleButton.BorderSizePixel = 0
@@ -242,15 +250,15 @@ HeeMenGui.Load = function(name)
     HeeMenGui.UI.FruitFinderHop.BorderColor3 = Color3.fromRGB(255, 255, 255)
     HeeMenGui.UI.FruitFinderHop.Size = UDim2.new(0, 20, 0, 20)
     HeeMenGui.UI.FruitFinderHop.BackgroundTransparency = 0
-    HeeMenGui.UI.FruitFinderHop.BorderSizePixel = 2;
-    HeeMenGui.UI.FruitFinderHop.BorderMode = Enum.BorderMode.Inset;
+    HeeMenGui.UI.FruitFinderHop.BorderSizePixel = 2
+    HeeMenGui.UI.FruitFinderHop.BorderMode = Enum.BorderMode.Inset
 
     HeeMenGui.UI.InnerFruitFinderHop = Instance.new("Frame")
     HeeMenGui.UI.InnerFruitFinderHop.Name = "InnerFruitFinderHop"
     HeeMenGui.UI.InnerFruitFinderHop.Parent = HeeMenGui.UI.FruitFinderHop
     HeeMenGui.UI.InnerFruitFinderHop.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     HeeMenGui.UI.InnerFruitFinderHop.Position = UDim2.new(0, 2, 0, 2)
-    HeeMenGui.UI.InnerFruitFinderHop.BorderColor3 = Color3.new(0, 0, 0);
+    HeeMenGui.UI.InnerFruitFinderHop.BorderColor3 = Color3.new(0, 0, 0)
     HeeMenGui.UI.InnerFruitFinderHop.Size = UDim2.new(0, 12, 0, 12)
     HeeMenGui.UI.InnerFruitFinderHop.BackgroundTransparency = 1
     HeeMenGui.UI.InnerFruitFinderHop.BorderSizePixel = 0
@@ -273,6 +281,63 @@ HeeMenGui.Load = function(name)
         end
     end)
 
+    HeeMenGui.UI.BodyMain = Instance.new("Frame")
+    HeeMenGui.UI.BodyMain.Name = "BodyMain"
+    HeeMenGui.UI.BodyMain.Parent = HeeMenGui.UI.Main
+    HeeMenGui.UI.BodyMain.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    HeeMenGui.UI.BodyMain.Size = UDim2.new(1, 0, 1, -30)
+    HeeMenGui.UI.BodyMain.Position = UDim2.new(0, 0, 0, 30)
+    HeeMenGui.UI.BodyMain.BackgroundTransparency = 0
+
+    HeeMenGui.UI.BodyMainUICorner = Instance.new("UICorner")
+    HeeMenGui.UI.BodyMainUICorner.Name = "BodyMainUICorner"
+    HeeMenGui.UI.BodyMainUICorner.Parent = HeeMenGui.UI.BodyMain
+
+    HeeMenGui.UI.BodyMainLine = Instance.new("Frame")
+    HeeMenGui.UI.BodyMainLine.Name = "BodyMainLine"
+    HeeMenGui.UI.BodyMainLine.Parent = HeeMenGui.UI.BodyMain
+    HeeMenGui.UI.BodyMainLine.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    HeeMenGui.UI.BodyMainLine.BorderSizePixel = 0
+    HeeMenGui.UI.BodyMainLine.Position = UDim2.new(0, 0, 0, 0)
+    HeeMenGui.UI.BodyMainLine.Size = UDim2.new(1, 0, 0, 5)
+
+    local tabName = "General"
+    local Bounds = game:GetService('TextService'):GetTextSize(tabName, 16, Enum.Font.Code, Vector2.new(1920, 1080))
+    -- return Bounds.X, Bounds.Y
+    HeeMenGui.UI.SampleTab = Instance.new("Frame")
+    HeeMenGui.UI.SampleTab.Name = "SampleTab"
+    HeeMenGui.UI.SampleTab.Parent = HeeMenGui.UI.TopMain
+    HeeMenGui.UI.SampleTab.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    HeeMenGui.UI.SampleTab.Position = UDim2.new(0, 80, 0, 3)
+    HeeMenGui.UI.SampleTab.BorderColor3 = Color3.fromRGB(127, 127, 127)
+    HeeMenGui.UI.SampleTab.Size = UDim2.new(0, Bounds.X + 20, 0, 28)
+    HeeMenGui.UI.SampleTab.BackgroundTransparency = 0
+    HeeMenGui.UI.SampleTab.BorderSizePixel = 1
+    HeeMenGui.UI.SampleTab.BorderMode = Enum.BorderMode.Inset
+    HeeMenGui.UI.SampleTab.MouseEnter:Connect(function()
+        HeeMenGui.UI.Main.Size = UDim2.new(1, -600, 0, 130)
+        HeeMenGui.UI.SampleTab.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    end)
+        
+    -- Position = UDim2.new(0, 0, 0, 0)
+    -- Size = UDim2.new(1, 0, 1, -1)
+    -- Text = Name
+    -- ZIndex = 1
+    -- Parent = TabButton
+
+    local SampleTabLabel = Instance.new("TextLabel")
+    SampleTabLabel.Name = "SampleTabLabel"
+    SampleTabLabel.Parent = HeeMenGui.UI.SampleTab
+    SampleTabLabel.BackgroundTransparency = 1
+    SampleTabLabel.Position = UDim2.new(0, 0, 0, 0)
+    SampleTabLabel.Size = UDim2.new(1, 0, 1, 0)
+    SampleTabLabel.Font = Enum.Font.Code
+    SampleTabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SampleTabLabel.TextSize = 16
+    SampleTabLabel.TextStrokeTransparency = 0
+    SampleTabLabel.Text = tabName
+    
+
     HeeMenGui.UI.CloseButton = Instance.new("ImageButton")
     HeeMenGui.UI.CloseButton.Name = "close"
     HeeMenGui.UI.CloseButton.Parent = HeeMenGui.UI.TopMain
@@ -284,15 +349,6 @@ HeeMenGui.Load = function(name)
     HeeMenGui.UI.CloseButton.ImageRectOffset = Vector2.new(284, 4)
     HeeMenGui.UI.CloseButton.ImageRectSize = Vector2.new(24, 24)
     HeeMenGui.UI.CloseButton.MouseButton1Click:Connect(function()
-        -- game.TweenService:Create(close, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
-        --     ImageTransparency = 1
-        -- }):Play()
-        -- wait()
-        -- game.TweenService:Create(Main, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        -- 	Size = UDim2.new(0,0,0,0),
-        -- 	Position = UDim2.new(0, Main.AbsolutePosition.X + (Main.AbsoluteSize.X / 2), 0, Main.AbsolutePosition.Y + (Main.AbsoluteSize.Y / 2))
-        -- }):Play()
-        -- wait(1)
         HeeMenGui.ScreenGui:Destroy()
         HeeMenGui.Destroy()
     end)
@@ -379,6 +435,127 @@ HeeMenGui.ShowServerList = function()
     --     FuitInfo.TextStrokeTransparency = 0.5
     -- end
 end
+HeeMenGui.AutoObservationHakiRejoin = function()
+    local PlayerHumanoid
+
+    if HeeMenGui.Config.AutoKenRejoin then
+        -- repeat wait() until game.ReplicatedStorage:FindFirstChild("Remotes")
+        -- repeat wait() until game.Players.LocalPlayer:FindFirstChild("PlayerGui")
+        repeat wait() until game.Players.LocalPlayer.PlayerGui:FindFirstChild("Main")
+        print("auto ken rejoin")
+        if game:GetService("Players").LocalPlayer.PlayerGui.Main:FindFirstChild("ChooseTeam") then
+
+            local teamButton = game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Pirates.Frame.ViewportFrame.TextButton
+            if HeeMenGui.Config.AutoJoinTeam == "Marines" then
+                teamButton = game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Marines.Frame.ViewportFrame.TextButton
+            end
+            teamButton.ZIndex = 9999
+            local posX = math.floor(teamButton.AbsolutePosition.X + (teamButton.AbsoluteSize.X / 2))
+            local posY = math.floor(teamButton.AbsolutePosition.Y + (teamButton.AbsoluteSize.Y / 2))
+            -- game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Pirates.Frame.ViewportFrame.TextButton.Size = UDim2.new(0, 10000, 0, 10000)
+            -- game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Pirates.Frame.ViewportFrame.TextButton.Position = UDim2.new(-4, 0, -5, 0)
+            -- game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Pirates.Frame.ViewportFrame.TextButton.BackgroundTransparency = 1
+            repeat
+                wait(.1)
+                game:GetService('VirtualInputManager'):SendMouseButtonEvent(posX, posY, 0, true, game, 1)
+                wait()
+                game:GetService('VirtualInputManager'):SendMouseButtonEvent(posX, posY, 0, false, game, 1)
+            until game:GetService("Players").LocalPlayer.Team
+        end
+        repeat wait() until game.Players.LocalPlayer.PlayerGui:FindFirstChild("ScreenGui")
+        repeat
+            game:GetService('VirtualInputManager'):SendKeyEvent(true, 'E', false, game)
+            wait(.1)
+        until game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+
+        repeat wait() until game:GetService('Players').LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+        PlayerHumanoid = game:GetService('Players').LocalPlayer.Character.HumanoidRootPart
+
+        local WaitingVelocity = Instance.new("BodyVelocity")
+        WaitingVelocity.Name = "WaitingVelocity"
+        WaitingVelocity.Velocity = Vector3.new(0, 0, 0)
+        WaitingVelocity.Parent = PlayerHumanoid
+
+        local mobFound = false
+        if game.PlaceId == 2753915549 then
+            game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5550.7583, 8.98336792, 8476.1875)
+            wait(1)
+            game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5770.88672, 77.5539017, 8632.08008)
+            wait(1)
+            game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5873.24561, 77.2306442, 8828.75488)
+            wait(1)
+            repeat
+                for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Name == "Military Spy [Lv. 325]" and v.Head then
+                        game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
+                        mobFound = true
+                        break
+                    end
+                end
+                wait()
+            until mobFound
+        elseif game.PlaceId == 4442272183 then
+            game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-3178.12939, 239.406693, -10408.3516)
+            wait(1)
+            repeat
+                for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Name == "Water Fighter [Lv. 1450]" and v.Head then
+                        game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
+                        mobFound = true
+                        break
+                    end
+                end
+                wait()
+            until mobFound
+        elseif game.PlaceId == 7449423635 then
+            -- game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5550.7583, 8.98336792, 8476.1875)
+            -- wait(1)
+            -- game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5770.88672, 77.5539017, 8632.08008)
+            -- wait(1)
+            -- game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5873.24561, 77.2306442, 8828.75488)
+            -- wait(1)
+        end
+        repeat
+            wait()
+        until not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+        -- wait(1)
+    end
+    if HeeMenGui.Config.AutoKenRejoin then
+        if PlayerHumanoid then
+            PlayerHumanoid.CFrame = PlayerHumanoid.CFrame * CFrame.new(0, 100, 0)
+        end
+
+        HeeMenGui.HopLowPlayer()
+        -- game.ReplicatedStorage['__ServerBrowser']:InvokeServer('teleport', game.JobId)
+        
+        -- wait(10)
+    end
+end
+HeeMenGui.TravelFunction = function()   
+	-- TeleportTab:Button("Teleport To Sea 1" ,function()
+		local args = {
+			[1] = "TravelMain" -- OLD WORLD to NEW WORLD
+		}
+		game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+	-- end)
+	-- TeleportTab:Button("Teleport To Sea 2" ,function()
+		local args = {
+			[1] = "TravelDressrosa" -- NEW WORLD to OLD WORLD
+		}
+		game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+	-- end)
+	
+	-- TeleportTab:Button("Teleport To Sea 3" ,function()
+		local args = {
+			[1] = "TravelZou" -- OLD WORLD to NEW WORLD
+		}
+		game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+	-- end)
+
+    -- Teleport to Temple of Time
+    -- game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(28286.8301, 14896.4893, 104.661583, 0, 1, -1, 0, 1, 0, 1, 0, 0)
+end
 HeeMenGui.GetMousePosition = function()
     -- return GetMouseLocation(UserInputService)
     return game:GetService('UserInputService'):GetMouseLocation()
@@ -419,9 +596,9 @@ HeeMenGui.GetPlayerDistance = function(target)
     local distance = 0
     local real_distance = 0
 
-    if target.Character then
-        if target.Character:FindFirstChild("Head") then
-            local lpHead = game:GetService('Players').LocalPlayer.Character.Head
+    if target.Character and game.Players.LocalPlayer then
+        if target.Character:FindFirstChild("Head") and game.Players.LocalPlayer.Character:FindFirstChild("Head") then
+            local lpHead = game.Players.LocalPlayer.Character.Head
             local tpHead = target.Character.Head
             distance = math.floor((lpHead.Position - tpHead.Position).Magnitude / 3)
             real_distance = math.floor((lpHead.Position - tpHead.Position).Magnitude / 3)
@@ -447,28 +624,38 @@ HeeMenGui.GetClosestPlayer = function(isCombat)
     local onCombatPlayer = nil
     local combatDistance = 360
     local targetDistance = 100
-    for k, v in pairs(game:GetService("Players"):GetChildren()) do
-        if not (v.Name == game:GetService("Players").LocalPlayer.Name) then
-            if v.Character then
-                local HumanoidRootPart = game.FindFirstChild(v.Character, "HumanoidRootPart")
-                local Humanoid = game.FindFirstChild(v.Character, "Humanoid")
-                if HumanoidRootPart and Humanoid and Humanoid.Health > 0 then
-                    local ScreenPosition, OnScreen = HeeMenGui.GetPositionOnScreen(HumanoidRootPart.Position)
-                    if OnScreen then
-                        local Distance = (HeeMenGui.GetMousePosition() - ScreenPosition).Magnitude
-                        local real_distance, range = HeeMenGui.GetPlayerDistance(v)
-                        if Distance <= combatDistance and real_distance <= 200 then
-                            onCombatPlayer = v
-                            combatDistance = Distance
+
+    if HeeMenGui.AimLockTarget then
+        local real_distance, range = HeeMenGui.GetPlayerDistance(HeeMenGui.AimLockTarget)
+        if real_distance <= 200 then
+            onCombatPlayer = HeeMenGui.AimLockTarget
+        end
+    end
+
+    if not onCombatPlayer then
+        for k, v in pairs(game:GetService("Players"):GetChildren()) do
+            if not (v.Name == game:GetService("Players").LocalPlayer.Name) then
+                if v.Character then
+                    local HumanoidRootPart = game.FindFirstChild(v.Character, "HumanoidRootPart")
+                    local Humanoid = game.FindFirstChild(v.Character, "Humanoid")
+                    if HumanoidRootPart and Humanoid and Humanoid.Health > 0 then
+                        local ScreenPosition, OnScreen = HeeMenGui.GetPositionOnScreen(HumanoidRootPart.Position)
+                        if OnScreen then
+                            local Distance = (HeeMenGui.GetMousePosition() - ScreenPosition).Magnitude
+                            local real_distance, range = HeeMenGui.GetPlayerDistance(v)
+                            if Distance <= combatDistance and real_distance <= 200 then
+                                onCombatPlayer = v
+                                combatDistance = Distance
+                            end
+                            if Distance <= targetDistance then
+                                targetPlayer = v
+                                targetDistance = Distance
+                            end
+                            -- if Distance <= DistanceToMouse and real_distance <= 200 then
+                            --     onCombatPlayer = v
+                            --     DistanceToMouse = Distance
+                            -- end
                         end
-                        if Distance <= targetDistance then
-                            targetPlayer = v
-                            targetDistance = Distance
-                        end
-                        -- if Distance <= DistanceToMouse and real_distance <= 200 then
-                        --     onCombatPlayer = v
-                        --     DistanceToMouse = Distance
-                        -- end
                     end
                 end
             end
@@ -476,12 +663,14 @@ HeeMenGui.GetClosestPlayer = function(isCombat)
     end
 
     if isCombat then
-        return onCombatPlayer
+        HeeMenGui.AimTargetPlayer = onCombatPlayer
     elseif onCombatPlayer then
-        return onCombatPlayer
+        HeeMenGui.AimTargetPlayer = onCombatPlayer
     else
-        return targetPlayer
+        HeeMenGui.AimTargetPlayer = targetPlayer
     end
+
+    return HeeMenGui.AimTargetPlayer
 end
 HeeMenGui.PlayerEsp = function()
     if not HeeMenGui.Config.AimBot then
@@ -504,14 +693,12 @@ HeeMenGui.PlayerEsp = function()
     for i, v in pairs(game:GetService("Players"):GetChildren()) do
         if not (v.Name == game:GetService("Players").LocalPlayer.Name) then
             if v.Character then
-                if v.Character:FindFirstChild("Head") then
+                if v.Character:FindFirstChild("Head") and v.Character:FindFirstChild("Humanoid") then
                     if v.Character.Head:FindFirstChild('NameEsp') then
                         local distance, range = HeeMenGui.GetPlayerDistance(v)
                         local TextNameEsp = v.Character.Head['NameEsp']:FindFirstChild("TextNameEsp")
                         -- local TextInfoEsp = v.Character.Head['InfoEsp'].TextLabel
                         local TextInfoEsp = v.Character.Head['NameEsp']:FindFirstChild("TextInfoEsp")
-                        TextNameEsp.TextColor3 = Color3.new(255, 255, 255)
-                        TextNameEsp.TextColor3 = Color3.new(255, 255, 255)
                         TextNameEsp.TextSize = range
                         -- if v.Team == game.Players.LocalPlayer.Team then
                         -- 	v.Character.Head['NameEsp'].TextLabel.TextColor3 = Color3.new(0, 127, 255)
@@ -528,6 +715,18 @@ HeeMenGui.PlayerEsp = function()
                         TextInfoEsp.Text = v.Name .. "\n"
                         TextInfoEsp.Text = TextInfoEsp.Text .. tostring(distance) .. "m\n"
                         TextInfoEsp.Text = TextInfoEsp.Text .. v.Data.LastSpawnPoint.Value
+
+                        TextNameEsp.TextColor3 = Color3.new(255, 255, 255)
+                        TextInfoEsp.TextColor3 = Color3.new(255, 255, 255)
+
+                        if HeeMenGui.AimLockTarget and HeeMenGui.AimLockTarget.Character then
+                            if HeeMenGui.AimLockTarget.Name == v.Name then
+                                TextNameEsp.TextColor3 = Color3.new(255, 0, 0)
+                                TextInfoEsp.TextColor3 = Color3.new(255, 0, 0)
+                            end
+                            -- HeeMenGui.AimLockTarget.Character.Head['NameEsp']:FindFirstChild("TextNameEsp").TextColor3 = Color3.new(255, 0, 0)
+                            -- HeeMenGui.AimLockTarget.Character.Head['NameEsp']:FindFirstChild("TextInfoEsp").TextColor3 = Color3.new(255, 0, 0)
+                        end
 
                         -- if targetLock then
                         -- 	if targetLock.Name == v.Name and distance > 400 then
@@ -593,38 +792,46 @@ HeeMenGui.PlayerEsp = function()
     end
 end
 HeeMenGui.FruitEsp = function()
-    for i, v in pairs(game.Workspace:GetChildren()) do
-        if string.find(v.Name, "Fruit") then
-            local fruitMesh = ""
-            if v.Name == "Fruit " then
-                for j, w in pairs(v:GetChildren()) do
-                    if string.find(w.Name, "Meshes") then
-                        fruitMesh = w.Name .. ' - '
-                        break
+    if game.Players.LocalPlayer.Character then
+        if game.Players.LocalPlayer.Character:FindFirstChild("Head") then
+            for i, v in pairs(game.Workspace:GetChildren()) do
+                if string.find(v.Name, "Fruit") then
+                    local fruitMesh = ""
+                    if v.Name == "Fruit " then
+                        for j, w in pairs(v:GetChildren()) do
+                            if string.find(w.Name, "Meshes") then
+                                fruitMesh = w.Name .. ' - '
+                                break
+                            end
+                        end
                     end
+
+                    if v:FindFirstChild("Handle") then
+                        local playerPosition = game:GetService('Players').LocalPlayer.Character.Head.Position
+                        local fruitDistance = math.floor((playerPosition - v.Handle.Position).Magnitude / 3)
+    
+                        if not v.Handle:FindFirstChild('NameEsp') then
+                            local bill = Instance.new('BillboardGui', v.Handle)
+                            bill.Name = 'NameEsp'
+                            bill.ExtentsOffset = Vector3.new(0, 1, 0)
+                            bill.Size = UDim2.new(1, 400, 1, 60)
+                            bill.Adornee = v.Handle
+                            bill.AlwaysOnTop = true
+                            local name = Instance.new('TextLabel', bill)
+                            name.Font = "GothamBold"
+                            name.FontSize = Enum.FontSize.Size18
+                            name.TextWrapped = true
+                            name.Size = UDim2.new(1, 0, 1, 0)
+                            name.TextYAlignment = Enum.TextYAlignment.Bottom
+                            name.BackgroundTransparency = 1
+                            name.TextStrokeTransparency = 0.5
+                            name.TextColor3 = Color3.fromRGB(255, 0, 0)
+                            name.Text = (v.Name .. '\n' .. fruitMesh .. fruitDistance .. ' M')
+                        else
+                            v.Handle['NameEsp'].TextLabel.Text = (v.Name .. '\n' .. fruitMesh .. fruitDistance .. ' M')
+                        end
+                    end                    
                 end
-            end
-            local fruitDistance = math.floor((game:GetService('Players').LocalPlayer.Character.Head.Position -
-                                                 v.Handle.Position).Magnitude / 3)
-            if not v.Handle:FindFirstChild('NameEsp') then
-                local bill = Instance.new('BillboardGui', v.Handle)
-                bill.Name = 'NameEsp'
-                bill.ExtentsOffset = Vector3.new(0, 1, 0)
-                bill.Size = UDim2.new(1, 400, 1, 60)
-                bill.Adornee = v.Handle
-                bill.AlwaysOnTop = true
-                local name = Instance.new('TextLabel', bill)
-                name.Font = "GothamBold"
-                name.FontSize = Enum.FontSize.Size18
-                name.TextWrapped = true
-                name.Size = UDim2.new(1, 0, 1, 0)
-                name.TextYAlignment = Enum.TextYAlignment.Bottom
-                name.BackgroundTransparency = 1
-                name.TextStrokeTransparency = 0.5
-                name.TextColor3 = Color3.fromRGB(255, 0, 0)
-                name.Text = (v.Name .. '\n' .. fruitMesh .. fruitDistance .. ' M')
-            else
-                v.Handle['NameEsp'].TextLabel.Text = (v.Name .. '\n' .. fruitMesh .. fruitDistance .. ' M')
             end
         end
     end
@@ -646,15 +853,22 @@ HeeMenGui.HopLowPlayer = function()
         end
         if skipCount == selectIndex then
             -- game.ReplicatedStorage['__ServerBrowser']:InvokeServer('teleport', v.id)
-			print(v.id)
-			print(v.playing)
-			wait(3)
+			-- print(v.id)
+			-- print(v.playing)
+			-- wait(3)
             game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, v.id, game.Players.LocalPlayer)
             break
         end
     end
 end
 HeeMenGui.LoadFruitFinderHop = function()
+    if not game.Players.LocalPlayer.Character then
+        return
+    end
+
+    if not game.Players.LocalPlayer.Character:FindFirstChild("Head") then
+        return
+    end
 
     local fruitFullInfo = ""
 
@@ -666,17 +880,23 @@ HeeMenGui.LoadFruitFinderHop = function()
                     if string.find(w.Name, "Meshes") then
                         fruitMesh = w.Name .. ' - '
                     end
-                    fruitFullInfo = fruitFullInfo .. w.Name .. "\n"
-                end
-                if fruitMesh == "" then
-                    for j, w in pairs(v.Fruit:GetChildren()) do
+                    if w.Name ~= "Fruit" and w.Name ~= "Handle" then
                         fruitFullInfo = fruitFullInfo .. w.Name .. "\n"
                     end
                 end
-	        HeeMenGui.FruitExists = true
+                if fruitMesh == "" then
+                    for j, w in pairs(v.Fruit:GetChildren()) do
+                        if w.Name ~= "Fruit" and w.Name ~= "Handle" then
+                            fruitFullInfo = fruitFullInfo .. w.Name .. "\n"
+                        end
+                    end
+                    HeeMenGui.FruitExists = true
+                end
             end
-            local fruitDistance = math.floor((game:GetService('Players').LocalPlayer.Character.Head.Position -
-                                                 v.Handle.Position).Magnitude / 3)
+            
+            local playerPosition = game:GetService('Players').LocalPlayer.Character.Head.Position
+            local fruitDistance = math.floor((playerPosition - v.Handle.Position).Magnitude / 3)
+
             if not v.Handle:FindFirstChild('NameEsp') then
                 local bill = Instance.new('BillboardGui', v.Handle)
                 bill.Name = 'NameEsp'
@@ -701,11 +921,11 @@ HeeMenGui.LoadFruitFinderHop = function()
     end
 
     if HeeMenGui.Config.FruitFinderHop and not HeeMenGui.FruitExists then
-        fruitFullInfo = "N/A\nHopping in " .. HeeMenGui.NumFormat(HeeMenGui.FruitFinderHopCountDown / 10, 1)
+        fruitFullInfo = "Hopping in " .. HeeMenGui.NumFormat(HeeMenGui.FruitFinderHopCountDown / 10, 1) .. "\n" .. fruitFullInfo
     end
 
     local FruitInfoGui = game.CoreGui:FindFirstChild("FruitInfoGui")
-    if HeeMenGui.FruitExists or HeeMenGui.Config.FruitFinderHop then
+    if fruitFullInfo then
         if not FruitInfoGui then
             FruitInfoGui = Instance.new("ScreenGui")
             FruitInfoGui.Name = "FruitInfoGui"
@@ -751,34 +971,36 @@ end
 HeeMenGui.LoadAbilities = function()
     HeeMenGui.LoadingAbilities = true
 
-    game.Players.LocalPlayer.Character:WaitForChild("Dodge")
-    game.Players.LocalPlayer.Character:WaitForChild("Skyjump")
-    game.Players.LocalPlayer.Character:WaitForChild("Soru")
-    HeeMenGui.FnDodge = nil
-    HeeMenGui.FnGeppo = nil
-    HeeMenGui.FnSoru = nil
-    for i, v in pairs(getgc()) do
-        if not HeeMenGui.FnDodge and type(v) == "function" and getfenv(v).script ==
-            game.Players.LocalPlayer.Character.Dodge then
-            local info = getinfo(v)
-            if info and info.nups == 18 and info.what == "Lua" then
-                HeeMenGui.FnDodge = v
+    if HeeMenGui.OnCombat then
+        game.Players.LocalPlayer.Character:WaitForChild("Dodge")
+        game.Players.LocalPlayer.Character:WaitForChild("Skyjump")
+        game.Players.LocalPlayer.Character:WaitForChild("Soru")
+        HeeMenGui.FnDodge = nil
+        HeeMenGui.FnGeppo = nil
+        HeeMenGui.FnSoru = nil
+        for i, v in pairs(getgc()) do
+            if not HeeMenGui.FnDodge and type(v) == "function" and getfenv(v).script ==
+                game.Players.LocalPlayer.Character.Dodge then
+                local info = getinfo(v)
+                if info and info.nups == 18 and info.what == "Lua" then
+                    HeeMenGui.FnDodge = v
+                end
+            elseif not HeeMenGui.FnGeppo and type(v) == "function" and getfenv(v).script ==
+                game.Players.LocalPlayer.Character.Skyjump then
+                local info = getinfo(v)
+                if info and info.nups == 12 and info.what == "Lua" then
+                    HeeMenGui.FnGeppo = v
+                end
+            elseif not fnSoru and type(v) == "function" and getfenv(v).script == game.Players.LocalPlayer.Character.Soru then
+                local info = getinfo(v)
+                if info and info.nups == 11 and info.what == "Lua" then
+                    HeeMenGui.FnSoru = v
+                end
             end
-        elseif not HeeMenGui.FnGeppo and type(v) == "function" and getfenv(v).script ==
-            game.Players.LocalPlayer.Character.Skyjump then
-            local info = getinfo(v)
-            if info and info.nups == 12 and info.what == "Lua" then
-                HeeMenGui.FnGeppo = v
-            end
-        elseif not fnSoru and type(v) == "function" and getfenv(v).script == game.Players.LocalPlayer.Character.Soru then
-            local info = getinfo(v)
-            if info and info.nups == 11 and info.what == "Lua" then
-                HeeMenGui.FnSoru = v
-            end
-        end
 
-        if HeeMenGui.FnDodge and HeeMenGui.FnGeppo and HeeMenGui.FnSoru then
-            break
+            if HeeMenGui.FnDodge and HeeMenGui.FnGeppo and HeeMenGui.FnSoru then
+                break
+            end
         end
     end
 
@@ -820,7 +1042,7 @@ HeeMenGui.LoadCombatScreenGui = function()
             myBounty.Font = Enum.Font.DenkOne
             myBounty.RichText = true
             myBounty.TextColor3 = Color3.fromRGB(255, 255, 255)
-            myBounty.TextSize = 40
+            myBounty.TextSize = 36
             myBounty.TextXAlignment = Enum.TextXAlignment.Center
             myBounty.TextYAlignment = Enum.TextYAlignment.Bottom
             myBounty.TextStrokeTransparency = 0.5
@@ -889,13 +1111,13 @@ HeeMenGui.CombatFunc = function()
             minkAgility.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
         end
 
-        game.Players.LocalPlayer.Character.Humanoid.JumpPower = 80
+        -- game.Players.LocalPlayer.Character.Humanoid.JumpPower = 80
     else
         if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Agility") then
             game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Agility:Destroy()
         end
 
-        game.Players.LocalPlayer.Character.Humanoid.JumpPower = 60
+        -- game.Players.LocalPlayer.Character.Humanoid.JumpPower = 60
     end
     HeeMenGui.LoadCombatScreenGui()
 end
@@ -906,6 +1128,10 @@ HeeMenGui.Events.InputBegan = game:GetService("UserInputService").InputBegan:Con
             HeeMenGui.Config.Show = not HeeMenGui.Config.Show
             HeeMenGui.ScreenGui.Enabled = HeeMenGui.Config.Show
             HeeMenGui.SaveConfig()
+        elseif io.KeyCode == Enum.KeyCode.F8 then
+            HeeMenGui.Config.AutoKenRejoin = not HeeMenGui.Config.AutoKenRejoin
+            HeeMenGui.SaveConfig()
+            HeeMenGui.AutoObservationHakiRejoin()
         elseif io.KeyCode == Enum.KeyCode.M then
             HeeMenGui.Print(HeeMenGui.Name)
             if HeeMenGui.Config.FruitFinderHop then
@@ -917,11 +1143,19 @@ HeeMenGui.Events.InputBegan = game:GetService("UserInputService").InputBegan:Con
             HeeMenGui.Config.AimBot = not HeeMenGui.Config.AimBot
             HeeMenGui.SaveConfig()
         elseif io.KeyCode == Enum.KeyCode.B then
-            -- if targetPlayer then
-            -- 	targetLock = targetPlayer
-            -- elseif targetLock then
-            -- 	targetLock = nil
-            -- end
+            if HeeMenGui.Config.AutoKenRejoin then
+                game.ReplicatedStorage['__ServerBrowser']:InvokeServer('teleport', game.JobId)
+            else
+                if HeeMenGui.AimLockTarget then
+                    if HeeMenGui.AimLockTarget == HeeMenGui.AimTargetPlayer then
+                        HeeMenGui.AimLockTarget = nil
+                    else
+                        HeeMenGui.AimLockTarget = HeeMenGui.AimTargetPlayer
+                    end
+                else
+                    HeeMenGui.AimLockTarget = HeeMenGui.AimTargetPlayer
+                end                
+            end
             -- game.ReplicatedStorage['__ServerBrowser']:InvokeServer('teleport', game.JobId)
             -- game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId,
             --     game.Players.LocalPlayer)
@@ -950,20 +1184,36 @@ HeeMenGui.Events.InputChanged = game:GetService("UserInputService").InputChanged
     end
 end)
 HeeMenGui.Events.Idled = game:GetService("Players").LocalPlayer.Idled:connect(function(character)
-    vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+    game:GetService("VirtualUser"):Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
     wait(1)
-    vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+    game:GetService("VirtualUser"):Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
 end)
 HeeMenGui.Events.CharacterAdded = game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function(character)
     wait(2)
     HeeMenGui.LoadAbilities()
+end)
+-- HeeMenGui.Events.Stepped = game:GetService("RunService").Stepped:Connect(function()
+-- end)
+HeeMenGui.Events.Stepped = game:GetService("RunService").Stepped:Connect(function()
+	if HeeMenGui.NoClip then		
+		for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
+			if v:IsA("BasePart") then
+				v.CanCollide = false
+			end
+		end
+	end
 end)
 HeeMenGui.Events.RenderStepped = game:GetService("RunService").RenderStepped:Connect(function()
 
     if not HeeMenGui then
         return
     end
-
+	-- game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CanCollide = false
+	-- for _, child in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
+	-- 	if child:IsA("BasePart") and child.CanCollide == true then
+	-- 		child.CanCollide = false
+	-- 	end
+	-- end
     HeeMenGui.PlayerEsp()
 
     HeeMenGui.FruitEsp()
@@ -974,139 +1224,140 @@ HeeMenGui.Events.RenderStepped = game:GetService("RunService").RenderStepped:Con
 
 	if HeeMenGui.FOV_CIRCLE then
 		HeeMenGui.FOV_CIRCLE.Visible = false
-	end
-    local TargetLockGui = game.CoreGui:FindFirstChild("TargetLockGui")
-    local target = HeeMenGui.GetClosestPlayer()
-    if target and HeeMenGui.Config.AimBot then
-        local distance, range = HeeMenGui.GetPlayerDistance(target)
-        local TextNameEsp = target.Character.Head['NameEsp']:FindFirstChild("TextNameEsp")
-        local TextInfoEsp = target.Character.Head['NameEsp']:FindFirstChild("TextInfoEsp")
-        -- TextNameEsp.TextColor3 = Color3.new(255, 0, 0)
-        -- TextInfoEsp.TextColor3 = Color3.new(255, 0, 0)
-        local cHealth = target.Character.Humanoid.Health or 0
-        local mHealth = target.Character.Humanoid.MaxHealth or 1
+	
+        local TargetLockGui = game.CoreGui:FindFirstChild("TargetLockGui")
+        local target = HeeMenGui.GetClosestPlayer()
 
-        local txtInfo = ""
-        txtInfo = txtInfo .. "Level: " .. target.Data.Level.Value .. '\n'
-        txtInfo = txtInfo .. "Name: " .. target.DisplayName .. '\n'
-        txtInfo = txtInfo .. "ID: " .. target.Name .. '\n'
-        txtInfo = txtInfo .. "Race: " .. target.Data.Race.Value .. '\n'
-        txtInfo = txtInfo .. "Team: " .. tostring(target.Team) .. '\n'
-        txtInfo = txtInfo .. "B/H: " .. HeeMenGui.NumFormat(target.leaderstats["Bounty/Honor"].Value) .. '\n'
-        txtInfo = txtInfo .. "Distance: " .. distance .. '\n'
-        txtInfo = txtInfo .. "Loc: " .. target.Data.LastSpawnPoint.Value .. '\n'
+        if HeeMenGui.Config.AimBot and target and target.Character:FindFirstChild("Head") then
+            local distance, range = HeeMenGui.GetPlayerDistance(target)
+            local TextNameEsp = target.Character.Head['NameEsp']:FindFirstChild("TextNameEsp")
+            local TextInfoEsp = target.Character.Head['NameEsp']:FindFirstChild("TextInfoEsp")
+            local cHealth = target.Character.Humanoid.Health or 0
+            local mHealth = target.Character.Humanoid.MaxHealth or 1
 
-        if distance <= 200 then
-            TextNameEsp.Text = ""
-            TextInfoEsp.Text = ""
+            local txtInfo = ""
+            txtInfo = txtInfo .. "Level: " .. target.Data.Level.Value .. '\n'
+            txtInfo = txtInfo .. "Name: " .. target.DisplayName .. '\n'
+            txtInfo = txtInfo .. "ID: " .. target.Name .. '\n'
+            txtInfo = txtInfo .. "Race: " .. target.Data.Race.Value .. '\n'
+            txtInfo = txtInfo .. "Team: " .. tostring(target.Team) .. '\n'
+            txtInfo = txtInfo .. "B/H: " .. HeeMenGui.NumFormat(target.leaderstats["Bounty/Honor"].Value) .. '\n'
+            txtInfo = txtInfo .. "Distance: " .. distance .. '\n'
+            txtInfo = txtInfo .. "Loc: " .. target.Data.LastSpawnPoint.Value .. '\n'
+
+            if distance <= 200 then
+                TextNameEsp.Text = ""
+                TextInfoEsp.Text = ""
+            end
+
+            -- TextNameEsp.Text = tostring(math.floor(cHealth * 100 / mHealth)) .. '-' .. target.DisplayName
+            -- TextNameEsp.ZIndex = 999
+            -- target.Character.Head['InfoEsp'].TextLabel.ZIndex = 999
+            -- HeeMenGui.UI.ShowName.Text = tostring(target.Name) .. " || " .. tostring(distance) .. "M" -- v.Data.LastSpawnPoint.Value
+            -- targetBounty.Text = numFormat(target.leaderstats["Bounty/Honor"].Value)
+
+            if not TargetLockGui then
+                TargetLockGui = Instance.new("ScreenGui")
+                TargetLockGui.Name = "TargetLockGui"
+                TargetLockGui.Parent = game.CoreGui
+            end
+
+            local Main = TargetLockGui:FindFirstChild("Main")
+            if not Main then
+                Main = Instance.new("Frame")
+                Main.Name = "Main"
+                Main.Parent = TargetLockGui
+                Main.BackgroundTransparency = 1
+                Main.ClipsDescendants = true
+                Main.Position = UDim2.new(0, 0, 0, 0)
+                Main.Size = UDim2.new(0, 400, 0, 400)
+            end
+
+            local HealtInfo = Main:FindFirstChild("TargetHealtInfo")
+            if not HealtInfo then
+                HealtInfo = Instance.new("TextLabel")
+                HealtInfo.Name = "TargetHealtInfo"
+                HealtInfo.Parent = Main
+                HealtInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                HealtInfo.BackgroundTransparency = 1
+                HealtInfo.Position = UDim2.new(0, 0, 0, 0)
+                HealtInfo.Size = UDim2.new(1, 1, 1, 0)
+                HealtInfo.Font = Enum.Font.DenkOne
+                HealtInfo.RichText = true
+                HealtInfo.Text = ""
+                HealtInfo.TextColor3 = Color3.fromRGB(255, 0, 0)
+                HealtInfo.TextSize = 40
+                HealtInfo.TextXAlignment = Enum.TextXAlignment.Left
+                HealtInfo.TextYAlignment = Enum.TextYAlignment.Top
+                HealtInfo.TextStrokeTransparency = 0.5
+            end
+
+            local ShowInfo = Main:FindFirstChild("PlayerInfo")
+            if not ShowInfo then
+                ShowInfo = Instance.new("TextLabel")
+                ShowInfo.Name = "PlayerInfo"
+                ShowInfo.Parent = Main
+                ShowInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                ShowInfo.BackgroundTransparency = 1
+                ShowInfo.Position = UDim2.new(0, 0, 0, healthInfoSize)
+                ShowInfo.Size = UDim2.new(1, 1, 1, 1)
+                ShowInfo.Font = Enum.Font.DenkOne
+                ShowInfo.RichText = true
+                ShowInfo.Text = ""
+                ShowInfo.TextColor3 = Color3.fromRGB(255, 255, 255)
+                ShowInfo.TextSize = 24
+                ShowInfo.TextXAlignment = Enum.TextXAlignment.Left
+                ShowInfo.TextYAlignment = Enum.TextYAlignment.Top
+                ShowInfo.TextStrokeTransparency = 0.5
+            end
+
+            if distance <= 200 then
+                HealtInfo.Size = UDim2.new(1, 1, 1, 40)
+                HealtInfo.Text = tostring(math.floor(cHealth * 100 / mHealth)) .. '%'
+                ShowInfo.Position = UDim2.new(0, 0, 0, 40)
+            else
+                HealtInfo:Destroy()
+                ShowInfo.Position = UDim2.new(0, 0, 0, 0)
+            end
+
+            ShowInfo.Text = txtInfo
+
+            -- local RootToViewportPoint, IsOnScreen = WorldToViewportPoint(Camera, target.Character.Position)
+            -- mouse_box.Position = Vector2.new(Vec3.X, Vec3.Y)
+            local Camera = workspace.CurrentCamera
+            local targetPos = target.Character.Head or target.Character.PrimaryPart
+            local Vec3, OnScreen = Camera.WorldToViewportPoint(Camera, targetPos.Position)
+            -- Main.Position = Vector2.new(Vec3.X, Vec3.Y)
+            -- HeeMenGui.UI.ShowName.Text = tostring(HeeMenGui.GetMousePosition()) .. ' - ' .. tostring(Vec3)
+            -- HeeMenGui.FOV_CIRCLE.Radius = 100 - (distance / 2)
+            -- if HeeMenGui.FOV_CIRCLE.Radius < 20 then
+            -- 	HeeMenGui.FOV_CIRCLE.Radius = 20
+            -- end
+            local camZ = Vector3.zAxis * Camera.CFrame.Position
+            local headZ = Vector3.zAxis * target.Character.Head.Position
+            local magnitude = (camZ - headZ).Magnitude
+            if magnitude < 4 then
+                magnitude = 4
+            elseif magnitude > 60 then
+                magnitude = 60
+            end
+            local fovRadius = 100 - ((magnitude - 4) * 80 / 56)
+            HeeMenGui.FOV_CIRCLE.Radius = fovRadius
+            -- HeeMenGui.UI.ShowName.Text = 'current zoom level: ' .. fovRadius
+
+            if distance <= 200 then
+                HeeMenGui.FOV_CIRCLE.Visible = true
+                HeeMenGui.FOV_CIRCLE.Position = Vector2.new(Vec3.X, Vec3.Y)
+                Main.Position = UDim2.new(0, Vec3.X + 10 + fovRadius, 0, Vec3.Y - 35 - 20)
+            else
+                local mPos = HeeMenGui.GetMousePosition()
+                Main.Position = UDim2.new(0, mPos.X + 20, 0, mPos.Y - 35)
+            end
+
+            -- HeeMenGui.UI.ShowName.Text = tostring(Vec3)
+        elseif TargetLockGui then
+            TargetLockGui:Destroy()
         end
-        -- TextNameEsp.Text = tostring(math.floor(cHealth * 100 / mHealth)) .. '-' .. target.DisplayName
-        -- TextNameEsp.ZIndex = 999
-        -- target.Character.Head['InfoEsp'].TextLabel.ZIndex = 999
-        -- HeeMenGui.UI.ShowName.Text = tostring(target.Name) .. " || " .. tostring(distance) .. "M" -- v.Data.LastSpawnPoint.Value
-        -- targetBounty.Text = numFormat(target.leaderstats["Bounty/Honor"].Value)
-
-        if not TargetLockGui then
-            TargetLockGui = Instance.new("ScreenGui")
-            TargetLockGui.Name = "TargetLockGui"
-            TargetLockGui.Parent = game.CoreGui
-        end
-
-        local Main = TargetLockGui:FindFirstChild("Main")
-        if not Main then
-            Main = Instance.new("Frame")
-            Main.Name = "Main"
-            Main.Parent = TargetLockGui
-            Main.BackgroundTransparency = 1
-            Main.ClipsDescendants = true
-            Main.Position = UDim2.new(0, 0, 0, 0)
-            Main.Size = UDim2.new(0, 400, 0, 400)
-        end
-
-        local HealtInfo = Main:FindFirstChild("TargetHealtInfo")
-        if not HealtInfo then
-            HealtInfo = Instance.new("TextLabel")
-            HealtInfo.Name = "TargetHealtInfo"
-            HealtInfo.Parent = Main
-            HealtInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            HealtInfo.BackgroundTransparency = 1
-            HealtInfo.Position = UDim2.new(0, 0, 0, 0)
-            HealtInfo.Size = UDim2.new(1, 1, 1, 0)
-            HealtInfo.Font = Enum.Font.DenkOne
-            HealtInfo.RichText = true
-            HealtInfo.Text = ""
-            HealtInfo.TextColor3 = Color3.fromRGB(255, 0, 0)
-            HealtInfo.TextSize = 40
-            HealtInfo.TextXAlignment = Enum.TextXAlignment.Left
-            HealtInfo.TextYAlignment = Enum.TextYAlignment.Top
-            HealtInfo.TextStrokeTransparency = 0.5
-        end
-
-        local ShowInfo = Main:FindFirstChild("PlayerInfo")
-        if not ShowInfo then
-            ShowInfo = Instance.new("TextLabel")
-            ShowInfo.Name = "PlayerInfo"
-            ShowInfo.Parent = Main
-            ShowInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            ShowInfo.BackgroundTransparency = 1
-            ShowInfo.Position = UDim2.new(0, 0, 0, healthInfoSize)
-            ShowInfo.Size = UDim2.new(1, 1, 1, 1)
-            ShowInfo.Font = Enum.Font.DenkOne
-            ShowInfo.RichText = true
-            ShowInfo.Text = ""
-            ShowInfo.TextColor3 = Color3.fromRGB(255, 255, 255)
-            ShowInfo.TextSize = 24
-            ShowInfo.TextXAlignment = Enum.TextXAlignment.Left
-            ShowInfo.TextYAlignment = Enum.TextYAlignment.Top
-            ShowInfo.TextStrokeTransparency = 0.5
-        end
-
-        if distance <= 200 then
-            HealtInfo.Size = UDim2.new(1, 1, 1, 40)
-            HealtInfo.Text = tostring(math.floor(cHealth * 100 / mHealth)) .. '%'
-            ShowInfo.Position = UDim2.new(0, 0, 0, 40)
-        else
-            HealtInfo:Destroy()
-            ShowInfo.Position = UDim2.new(0, 0, 0, 0)
-        end
-
-        ShowInfo.Text = txtInfo
-
-        -- local RootToViewportPoint, IsOnScreen = WorldToViewportPoint(Camera, target.Character.Position);
-        -- mouse_box.Position = Vector2.new(Vec3.X, Vec3.Y)
-        local Camera = workspace.CurrentCamera
-        local targetPos = target.Character.Head or target.Character.PrimaryPart
-        local Vec3, OnScreen = Camera.WorldToViewportPoint(Camera, targetPos.Position)
-        -- Main.Position = Vector2.new(Vec3.X, Vec3.Y)
-        -- HeeMenGui.UI.ShowName.Text = tostring(HeeMenGui.GetMousePosition()) .. ' - ' .. tostring(Vec3)
-        -- HeeMenGui.FOV_CIRCLE.Radius = 100 - (distance / 2)
-        -- if HeeMenGui.FOV_CIRCLE.Radius < 20 then
-        -- 	HeeMenGui.FOV_CIRCLE.Radius = 20
-        -- end
-        local camZ = Vector3.zAxis * Camera.CFrame.Position
-        local headZ = Vector3.zAxis * target.Character.Head.Position
-        local magnitude = (camZ - headZ).Magnitude
-        if magnitude < 4 then
-            magnitude = 4
-        elseif magnitude > 60 then
-            magnitude = 60
-        end
-        local fovRadius = 100 - ((magnitude - 4) * 80 / 56)
-        HeeMenGui.FOV_CIRCLE.Radius = fovRadius
-        -- HeeMenGui.UI.ShowName.Text = 'current zoom level: ' .. fovRadius
-
-        if distance <= 200 then
-            HeeMenGui.FOV_CIRCLE.Visible = true
-            HeeMenGui.FOV_CIRCLE.Position = Vector2.new(Vec3.X, Vec3.Y)
-            Main.Position = UDim2.new(0, Vec3.X + 10 + fovRadius, 0, Vec3.Y - 35 - 20)
-        else
-            local mPos = HeeMenGui.GetMousePosition()
-            Main.Position = UDim2.new(0, mPos.X + 20, 0, mPos.Y - 35)
-        end
-
-        -- HeeMenGui.UI.ShowName.Text = tostring(Vec3)
-    elseif TargetLockGui then
-        TargetLockGui:Destroy()
     end
 
     -- HeeMenGui.FOV_CIRCLE.Visible = true
@@ -1123,7 +1374,19 @@ HeeMenGui.Events.RenderStepped = game:GetService("RunService").RenderStepped:Con
     -- HeeMenGui.UI.ShowName.Text = tostring(HeeMenGui.GetMousePosition())
 
 	if HeeMenGui.UI.ShowName then
-		HeeMenGui.UI.ShowName.Text = tostring(HeeMenGui.Config.AimBot)
+        if HeeMenGui.Config.AutoKenRejoin then
+            local args = {
+                [1] = "KenTalk",
+                [2] = "Status"
+            }
+            local status = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+            if status then
+                HeeMenGui.UI.ShowName.Text = "Ken Muai level is " .. string.match(status, "%d+")
+            end
+        else
+            HeeMenGui.UI.ShowName.Text = HeeMenGui.Name
+        end
+		-- HeeMenGui.UI.ShowName.Text = tostring(HeeMenGui.Config.AimBot)
 	end
 
 end)
@@ -1177,6 +1440,7 @@ HeeMenGui.LoadConfig()
 
 HeeMenGui.Load()
 
+HeeMenGui.AutoObservationHakiRejoin()
 -- HeeMenGui.UI.ShowName.Text = tostring(HeeMenGui.Config.AimBot)
 -- HeeMenGui.LoadAbilities()
 
@@ -1266,6 +1530,3 @@ while getgenv().HeeMenGui and wait(0.1) do
         end
     end
 end
-
--- repeat wait(.1)
--- until not getgenv().HeeMenGui
